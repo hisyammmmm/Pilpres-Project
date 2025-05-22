@@ -1,0 +1,58 @@
+### Register user
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "nik": "1234567890987654",
+    "name": "Admin",
+    "email": "Admin@gmail.com",
+    "password": "admin"
+}
+
+### Login
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "Admin@gmail.com",
+    "password": "admin"
+}
+
+### Get all candidates (public)
+GET http://localhost:5000/candidates
+
+### Create candidate (admin only - requires Bearer Token)
+POST http://localhost:5000/candidates
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJBZG1pbkBnbWFpbC5jb20iLCJuYW1lIjoiQWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDc5MDk4NTgsImV4cCI6MTc0NzkxMTY1OH0.x5Dyn2FGuk_MxKQNP0Ak-G8lS0XFCwnlxZKpxvT5CS8
+Content-Type: multipart/form-data
+
+# ⛔ Note: Ganti di VSCode dengan form-data editor saat menguji ini
+# atau gunakan Postman untuk upload file dengan form-data
+# Key: name, description, image (type file)
+
+### Update candidate by ID (admin only - requires Bearer Token)
+PATCH http://localhost:5000/candidates/1
+Authorization: Bearer 
+Content-Type: multipart/form-data
+
+# Isi sama seperti create candidate
+
+### Delete candidate by ID (admin only)
+DELETE http://localhost:5000/candidates/1
+Authorization: Bearer 
+
+### Vote (user only - 1 kali)
+POST http://localhost:5000/vote
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+    "candidateId": 1
+}
+
+### Get all votes (admin only)
+GET http://localhost:5000/votes
+Authorization: Bearer 
+
+### Logout
+DELETE http://localhost:5000/logout
