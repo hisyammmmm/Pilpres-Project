@@ -11,23 +11,23 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="container">
-        <div className="navbar-content">
-          <Link to="/" className="navbar-brand">
-            🗳️ PILPRES 2024
-          </Link>
-          
+      <div className="container navbar-content">
+        <Link to="/" className="navbar-brand">
+          Pemilihan Umum Presiden 2024
+        </Link>
+
+        <div className="navbar-right">
           {isAuthenticated ? (
-            <div className="navbar-user">
-              <span>Welcome, {user.name}</span>
+            <>
+              <span className="navbar-welcome">Halo, {user.name}</span>
               <ul className="navbar-nav">
                 <li><Link to="/voting">Voting</Link></li>
                 {isAdmin && <li><Link to="/admin">Admin</Link></li>}
               </ul>
-              <button onClick={handleLogout} className="btn-logout">
+              <button onClick={handleLogout} className="btn btn-logout">
                 Logout
               </button>
-            </div>
+            </>
           ) : (
             <ul className="navbar-nav">
               <li><Link to="/login">Login</Link></li>

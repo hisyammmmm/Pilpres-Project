@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const CandidateCard = ({ 
   candidate, 
@@ -11,9 +12,10 @@ const CandidateCard = ({
   loading 
 }) => {
   const isVotedCandidate = votedFor === candidate.id;
+  const { user } = useAuth();
 
   return (
-    <div className="card fade-in">
+    <div className="candidate-card">
       <img 
         src={candidate.image} 
         alt={candidate.name}
@@ -23,48 +25,42 @@ const CandidateCard = ({
         }}
       />
       
-      <div className="candidate-name">
-        {candidate.name}
+      <div className="candidate-info">
+        <h3 className="candidate-name">{candidate.name}</h3>
+        <p className="candidate-description">{candidate.description}</p>
       </div>
-      
-      <div className="candidate-description">
-        {candidate.description}
+
+      <div className="card-actions">
+        {isAdmin ? (
+          <div className="admin-buttons">
+            <button onClick={() => onEdit(candidate)} className="btn-gold">Edit</button>
+            <button onClick={() => onDelete(candidate.id)} className="btn-red">Delete</button>
+          </div>
+        ) : (
+          <>
+            {user && user.role === 'admin' ? (
+              <div className="voted-badge">Admin tidak bisa voting</div>
+            ) : hasVoted ? (
+              <div className={`voted-badge ${isVotedCandidate ? 'voted-yes' : 'voted-other'}`}>
+                {isVotedCandidate ? '✓ Kamu memilih kandidat ini' : 'Kamu sudah memilih'}
+              </div>
+            ) : (
+              <button 
+                onClick={() => {
+                  const confirmed = window.confirm(`Apakah Anda yakin ingin memilih ${candidate.name}?`);
+                  if (confirmed) {
+                    onVote(candidate.id);
+                  }
+                }} 
+                className="btn-vote"
+                disabled={loading}
+              >
+                {loading ? 'Voting...' : 'Vote'}
+              </button>
+            )}
+          </>
+        )}
       </div>
-      
-      {isAdmin ? (
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button 
-            onClick={() => onEdit(candidate)}
-            className="btn btn-secondary btn-small"
-            style={{ width: '50%' }}
-          >
-            Edit
-          </button>
-          <button 
-            onClick={() => onDelete(candidate.id)}
-            className="btn btn-danger btn-small"
-            style={{ width: '50%' }}
-          >
-            Delete
-          </button>
-        </div>
-      ) : (
-        <>
-          {hasVoted ? (
-            <div className="voted-badge">
-              {isVotedCandidate ? '✓ You voted for this candidate' : 'You have voted'}
-            </div>
-          ) : (
-            <button 
-              onClick={() => onVote(candidate.id)}
-              className="btn btn-success vote-button"
-              disabled={loading}
-            >
-              {loading ? 'Voting...' : 'Vote'}
-            </button>
-          )}
-        </>
-      )}
     </div>
   );
 };

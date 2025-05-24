@@ -3,10 +3,10 @@ POST http://localhost:5000/register
 Content-Type: application/json
 
 {
-    "nik": "1234567890987654",
-    "name": "Admin",
-    "email": "Admin@gmail.com",
-    "password": "admin"
+    "nik": "1234567890987653",
+    "name": "adm",
+    "email": "Adm@gmail.com",
+    "password": "123123"
 }
 
 ### Login
@@ -14,8 +14,8 @@ POST http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "email": "Admin@gmail.com",
-    "password": "admin"
+    "email": "adm@gmail.com",
+    "password": "123123"
 }
 
 ### Get all candidates (public)
@@ -34,6 +34,12 @@ Content-Type: multipart/form-data
 PATCH http://localhost:5000/candidates/1
 Authorization: Bearer 
 Content-Type: multipart/form-data
+
+{
+    "name": "asd",
+    "description": "asd",
+    "image":  "D:\.SEMANGAT KULIAH\.SEMESTER 6\Prak TCC\projek akhir\Pilpres-Project\frontend\public\logo192.png"
+}
 
 # Isi sama seperti create candidate
 
