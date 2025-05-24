@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { candidateAPI, voteAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import CandidateCard from './CandidateCard';
+import CountdownTimer from './CountdownTimer';
 
 const VotingPage = () => {
   const [candidates, setCandidates] = useState([]);
@@ -74,7 +75,7 @@ const VotingPage = () => {
         <p className="voting-subtitle">
           {hasVoted 
             ? 'Terima kasih telah memberikan suara Anda!' 
-            : 'Silakan pilih kandidat pilihan Anda'
+            : 'Suara anda menentukan masa depan kita!'
           }
         </p>
       </div>
@@ -104,6 +105,13 @@ const VotingPage = () => {
           Belum ada kandidat yang tersedia
         </div>
       )}
+
+      <div id="countdown-container">
+        <div id="countdown">
+          <CountdownTimer targetDate="2025-07-01T12:00:00" />
+        </div>
+      </div>
+
     </div>
   );
 };
