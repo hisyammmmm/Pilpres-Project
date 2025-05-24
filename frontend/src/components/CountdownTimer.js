@@ -32,7 +32,7 @@ const CountdownTimer = ({ targetDate }) => {
   }, [targetDate]);
 
   if (timeLeft.finished) {
-    return <h3 style={{ color: 'white' }}>Perhitungan suara dimulai!</h3>;
+    return <h3 style={{ color: 'white' }}>Perhitungan suara dimulai</h3>;
   }
 
   return (
