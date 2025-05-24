@@ -23,7 +23,7 @@ GET http://localhost:5000/candidates
 
 ### Create candidate (admin only - requires Bearer Token)
 POST http://localhost:5000/candidates
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJBZG1pbkBnbWFpbC5jb20iLCJuYW1lIjoiQWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDc5MDk4NTgsImV4cCI6MTc0NzkxMTY1OH0.x5Dyn2FGuk_MxKQNP0Ak-G8lS0XFCwnlxZKpxvT5CS8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJBZG1pbkBnbWFpbC5jb20iLCJuYW1lIjoiQWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDc5Nzk1NDUsImV4cCI6MTc0Nzk4MTM0NX0.8wLNdvl9mS1Gj3Zis2kGZ4PQ39xpmi4ccU6ojpK7QSM
 Content-Type: multipart/form-data
 
 # ⛔ Note: Ganti di VSCode dengan form-data editor saat menguji ini
