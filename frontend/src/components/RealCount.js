@@ -92,6 +92,7 @@ const RealCount = () => {
               </ResponsiveContainer>
             </div>
 
+
             <div className="chart-wrapper">
               <h3>Perbandingan Perolehan Suara</h3>
               <ResponsiveContainer width="100%" height={300}>
