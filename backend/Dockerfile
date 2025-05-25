@@ -27,7 +27,7 @@ RUN mkdir -p uploads
 EXPOSE 5000
 
 # Set environment variable for production
-ENV NODE_ENV=production
+ENV 5000
 
 # Start the application
 CMD ["node", "index.js"]
