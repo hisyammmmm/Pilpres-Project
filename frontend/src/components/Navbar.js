@@ -24,7 +24,7 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="navbar-content">
           <Link to="/" className="navbar-brand">
-            E-Voting Pilpres 2028
+            E-Voting Pilpres 2045
           </Link>
 
           <div className="navbar-right">

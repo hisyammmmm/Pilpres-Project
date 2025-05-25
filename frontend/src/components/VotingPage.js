@@ -76,7 +76,7 @@ const VotingPage = () => {
         <h1 className="voting-title">Gunakan Hak Pilih Anda!</h1>
         <p className="voting-subtitle">
           {hasVoted
-            ? 'Terima kasih telah berpartisipasi dalam Pilpres 2024!'
+            ? 'Terima kasih telah berpartisipasi dalam Pilpres 2045!'
             : 'Pilih pemimpin masa depan Indonesia. Suara Anda sangat berarti!'}
         </p>
       </div>
