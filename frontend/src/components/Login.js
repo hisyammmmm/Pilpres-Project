@@ -45,7 +45,7 @@ const Login = () => {
   return (
     <>
       <div className="form-container fade-in">
-        <h2 className="form-title">Login Pilpres 2024</h2>
+        <h2 className="form-title">Login</h2>
 
         {error && <div className="alert alert-error">{error}</div>}
 

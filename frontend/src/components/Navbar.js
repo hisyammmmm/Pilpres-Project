@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom'; // Gunakan NavLink
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Modal from './Modal'; // Pastikan untuk mengimpor komponen Modal
+import { FiLogOut, FiHome, FiCheckSquare, FiSettings, FiPieChart, FiActivity } from 'react-icons/fi';
+import Modal from './Modal';
 
 const Navbar = () => {
   const { user, logout, isAdmin, isAuthenticated } = useAuth();
@@ -21,7 +22,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        <div className="navbar-content"> 
+        <div className="navbar-content">
           <Link to="/" className="navbar-brand">
             E-Voting Pilpres 2028
           </Link>
@@ -31,17 +32,24 @@ const Navbar = () => {
               <>
                 <span className="navbar-welcome">Halo, {user.name}!</span>
                 <ul className="navbar-nav">
-                  <li><NavLink to="/voting" activeClassName="active">Voting</NavLink></li>
-                  {isAdmin && <li><NavLink to="/admin" activeClassName="active">Admin</NavLink></li>}
+                  <li><NavLink to="/voting"><FiCheckSquare />Voting</NavLink></li>
+                  <li><NavLink to="/realcount"><FiActivity />Real Count</NavLink></li>
+                  {isAdmin && (
+                    <>
+                      <li><NavLink to="/admin"><FiSettings />Admin</NavLink></li>
+                    </>
+                  )}
+                  <li>
+                    <button onClick={handleLogout} className="btn-logout">
+                      <FiLogOut />Logout
+                    </button>
+                  </li>
                 </ul>
-                <button onClick={handleLogout} className="btn-logout">
-                  Logout
-                </button>
               </>
             ) : (
               <ul className="navbar-nav">
-                <li><NavLink to="/login" activeClassName="active">Login</NavLink></li>
-                <li><NavLink to="/register" activeClassName="active">Register</NavLink></li>
+                <li><NavLink to="/login">Login</NavLink></li>
+                <li><NavLink to="/register">Register</NavLink></li>
               </ul>
             )}
           </div>

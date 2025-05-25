@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { candidateAPI, voteAPI } from '../services/api';
 import CandidateCard from './CandidateCard';
 import Modal from './Modal';
+import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [candidates, setCandidates] = useState([]);
@@ -186,12 +187,14 @@ const AdminDashboard = () => {
 
             <div className="admin-actions">
                 <h2>Kelola Kandidat</h2>
-                <button
+                <div className="admin-buttons">
+                  <button
                     onClick={handleAddCandidate}
                     className="btn btn-primary btn-small"
-                >
+                  >
                     + Tambah Kandidat Baru
-                </button>
+                  </button>
+                </div>
             </div>
 
             <div className="cards-grid">
