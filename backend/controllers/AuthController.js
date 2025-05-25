@@ -21,7 +21,7 @@ export const login = async (req, res) => {
         if (!match) return res.status(401).json({ msg: "Wrong password" });
 
         const userData = { id: user.id, email: user.email, name: user.name, role: user.role };
-        const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
+        const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10m" });
         const refreshToken = jwt.sign(userData, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "1d" });
 
         await User.update({ refresh_token: refreshToken }, { where: { id: user.id } });

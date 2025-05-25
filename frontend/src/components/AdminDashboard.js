@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { candidateAPI, voteAPI } from '../services/api';
 import CandidateCard from './CandidateCard';
+import Modal from './Modal';
 
 const AdminDashboard = () => {
   const [candidates, setCandidates] = useState([]);
@@ -16,6 +17,8 @@ const AdminDashboard = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [successModal, setSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     loadData();
@@ -86,7 +89,6 @@ const AdminDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
 
     try {
       const formDataToSend = new FormData();
@@ -98,16 +100,17 @@ const AdminDashboard = () => {
 
       if (editingCandidate) {
         await candidateAPI.update(editingCandidate.id, formDataToSend);
-        setSuccess('Candidate updated successfully');
+        setSuccessMessage('Kandidat berhasil diperbarui!');
       } else {
         await candidateAPI.create(formDataToSend);
-        setSuccess('Candidate added successfully');
+        setSuccessMessage('Kandidat baru berhasil ditambahkan!');
       }
 
       setShowModal(false);
+      setSuccessModal(true);
       loadCandidates();
     } catch (error) {
-      setError(error.response?.data?.msg || 'Failed to save candidate');
+      setError(error.response?.data?.msg || 'Gagal menyimpan kandidat');
     }
   };
 
@@ -145,168 +148,150 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="container">
-      <div className="admin-header">
-        <h1 className="admin-title">Admin Dashboard</h1>
-        <p className="admin-subtitle">Kelola kandidat dan pantau hasil voting</p>
-      </div>
-
-      {error && (
-        <div className="alert alert-error">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="alert alert-success">
-          {success}
-        </div>
-      )}
-
-      {/* Voting Results */}
-      <div className="card" style={{ marginBottom: '2rem' }}>
-        <h2 style={{ marginBottom: '1rem', color: '#333' }}>Hasil Voting Real-time</h2>
-        <p style={{ marginBottom: '1rem', color: '#666' }}>
-          Total Suara: <strong>{getTotalVotes()}</strong>
-        </p>
-        
-        {getVoteResults().map(candidate => (
-          <div key={candidate.id} style={{ marginBottom: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '10px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 'bold' }}>{candidate.name}</span>
-              <span style={{ color: '#667eea', fontWeight: 'bold' }}>
-                {candidate.voteCount} suara ({candidate.percentage}%)
-              </span>
-            </div>
-            <div style={{ 
-              width: '100%', 
-              height: '10px', 
-              background: '#e9ecef', 
-              borderRadius: '5px', 
-              marginTop: '0.5rem',
-              overflow: 'hidden'
-            }}>
-              <div style={{ 
-                width: `${candidate.percentage}%`, 
-                height: '100%', 
-                background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                transition: 'width 0.3s ease'
-              }}></div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="admin-actions">
-        <h2>Manage Candidates</h2>
-        <button 
-          onClick={handleAddCandidate}
-          className="btn btn-primary btn-small"
-        >
-          Add New Candidate
-        </button>
-      </div>
-
-      <div className="cards-grid">
-        {candidates.map(candidate => (
-          <CandidateCard
-            key={candidate.id}
-            candidate={candidate}
-            onEdit={handleEditCandidate}
-            onDelete={handleDeleteCandidate}
-            isAdmin={true}
-          />
-        ))}
-      </div>
-
-      {candidates.length === 0 && (
-        <div style={{ textAlign: 'center', color: '#666', fontSize: '1.2rem', marginTop: '3rem' }}>
-          Belum ada kandidat. Tambahkan kandidat pertama!
-        </div>
-      )}
-
-      {/* Modal */}
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3 className="modal-title">
-                {editingCandidate ? 'Edit Candidate' : 'Add New Candidate'}
-              </h3>
-              <button 
-                className="modal-close"
-                onClick={() => setShowModal(false)}
-              >
-                ×
-              </button>
+        <div className="container">
+            <div className="admin-header">
+                <h1 className="admin-title">Dashboard Admin Pilpres</h1>
+                <p className="admin-subtitle">Kelola kandidat dan pantau hasil voting</p>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Candidate Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
-              </div>
+            {error && <div className="alert alert-error">{error}</div>}
+            {success && <div className="alert alert-success">{success}</div>}
 
-              <div className="form-group">
-                <label>Description</label>
-                <textarea
-                  className="form-control"
-                  rows="4"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  required
-                ></textarea>
-              </div>
+            {/* Voting Results */}
+            <div className="card admin-card" style={{ marginBottom: '2rem' }}>
+                <h2 style={{ marginBottom: '1.5rem', color: 'var(--primary-white)' }}>Hasil Voting Real-time</h2>
+                <p style={{ marginBottom: '2rem', color: 'var(--text-light)' }}>
+                    Total Suara Masuk: <strong style={{ color: 'var(--accent-gold)', fontSize: '1.2em' }}>{getTotalVotes()}</strong>
+                </p>
 
-              <div className="form-group">
-                <label>Candidate Image</label>
-                <input
-                  type="file"
-                  id="image"
-                  className="file-input"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-                <label htmlFor="image" className="file-input-label">
-                  {formData.image ? formData.image.name : 'Choose Image'}
-                </label>
-                
-                {imagePreview && (
-                  <div className="file-preview">
-                    <img src={imagePreview} alt="Preview" />
-                  </div>
-                )}
-              </div>
+                {getVoteResults().map(candidate => (
+                    <div key={candidate.id} className="vote-result-item">
+                        <div className="vote-result-header">
+                            <span className="vote-result-name">{candidate.name}</span>
+                            <span className="vote-result-count">
+                                {candidate.voteCount} suara ({candidate.percentage}%)
+                            </span>
+                        </div>
+                        <div className="progress-bar-bg">
+                            <div
+                                className="progress-bar-fg"
+                                style={{ width: `${candidate.percentage}%` }}
+                            >
+                            </div>
+                        </div>
+                    </div>
+                ))}
+                 {getTotalVotes() === 0 && <p style={{textAlign: 'center', color: 'var(--text-light)'}}>Belum ada suara yang masuk.</p>}
+            </div>
 
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  style={{ width: '50%' }}
+            <div className="admin-actions">
+                <h2>Kelola Kandidat</h2>
+                <button
+                    onClick={handleAddCandidate}
+                    className="btn btn-primary btn-small"
                 >
-                  {editingCandidate ? 'Update' : 'Add'} Candidate
+                    + Tambah Kandidat Baru
                 </button>
-                <button 
-                  type="button" 
-                  className="btn btn-secondary"
-                  style={{ width: '50%' }}
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+            </div>
+
+            <div className="cards-grid">
+                {candidates.map(candidate => (
+                    <CandidateCard
+                        key={candidate.id}
+                        candidate={candidate}
+                        onEdit={handleEditCandidate}
+                        onDelete={handleDeleteCandidate}
+                        isAdmin={true}
+                    />
+                ))}
+            </div>
+             {showModal && (
+                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                    <div className="modal-content modal-horizontal" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3 className="modal-title">
+                                {editingCandidate ? 'Edit Kandidat' : 'Tambah Kandidat Baru'}
+                            </h3>
+                            <button className="modal-close" onClick={() => setShowModal(false)}>×</button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="horizontal-form">
+                            <div className="form-layout">
+                                <div className="form-image-section">
+                                    <div className="image-upload-container">
+                                        {imagePreview ? (
+                                            <img src={imagePreview} alt="Preview" className="candidate-preview" />
+                                        ) : (
+                                            <div className="image-placeholder">
+                                                <span>Upload Foto 3x4</span>
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            id="image"
+                                            className="file-input"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                        />
+                                        <label htmlFor="image" className="file-input-button">
+                                            {imagePreview ? 'Ganti Foto' : 'Upload Foto'}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Right side - Form fields */}
+                                <div className="form-fields-section">
+                                    <div className="form-group">
+                                        <label>Nama Kandidat</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            placeholder="Masukkan nama lengkap"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Deskripsi (Visi & Misi)</label>
+                                        <textarea
+                                            className="form-control"
+                                            rows="4"
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                            placeholder="Masukkan visi dan misi kandidat"
+                                            required
+                                        ></textarea>
+                                    </div>
+
+                                    <div className="form-actions">
+                                        <button type="submit" className="btn btn-primary">
+                                            {editingCandidate ? 'Update' : 'Tambah'} Kandidat
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-secondary"
+                                            onClick={() => setShowModal(false)}
+                                        >
+                                            Batal
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            <Modal
+              isOpen={successModal}
+              type="success"
+              title="Berhasil!"
+              message={successMessage}
+              onClose={() => setSuccessModal(false)}
+            />
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default AdminDashboard;

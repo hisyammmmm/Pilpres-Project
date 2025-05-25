@@ -13,7 +13,7 @@ const Register = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -30,21 +30,18 @@ const Register = () => {
     setError('');
     setSuccess('');
 
-    // Validasi
     if (formData.password !== formData.confirmPassword) {
-      setError('Password confirmation does not match');
+      setError('Konfirmasi password tidak cocok');
       setLoading(false);
       return;
     }
-
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError('Password minimal 6 karakter');
       setLoading(false);
       return;
     }
-
-    if (formData.nik.length < 16) {
-      setError('NIK must be 16 digits');
+    if (formData.nik.length !== 16 || !/^\d+$/.test(formData.nik)) {
+      setError('NIK harus terdiri dari 16 digit angka');
       setLoading(false);
       return;
     }
@@ -55,109 +52,120 @@ const Register = () => {
       email: formData.email,
       password: formData.password
     });
-    
+
     if (result.success) {
-      setSuccess('Registration successful! Please login.');
-      setTimeout(() => navigate('/login'), 2000);
+      setSuccess('Registrasi berhasil! Anda akan diarahkan ke halaman login.');
+      setTimeout(() => navigate('/login'), 2500);
     } else {
       setError(result.message);
     }
-    
+
     setLoading(false);
   };
 
   return (
-    <div className="container">
-      <div className="form-container fade-in">
-        <h2 className="form-title">Register</h2>
-        
+    <div className="auth-page-background">
+      <div className="form-container">
+        <h2 className="form-title">Registrasi Akun</h2>
+
         {error && (
           <div className="alert alert-error">
             {error}
           </div>
         )}
-        
+
         {success && (
           <div className="alert alert-success">
             {success}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>NIK (16 digits)</label>
+            <label htmlFor="nik">NIK (16 digit)</label>
             <input
               type="text"
               name="nik"
+              id="nik"
               className="form-control"
               value={formData.nik}
               onChange={handleChange}
               maxLength="16"
               pattern="[0-9]{16}"
+              title="NIK harus 16 digit angka"
               required
+              placeholder="Masukkan NIK Anda"
             />
           </div>
-          
+
           <div className="form-group">
-            <label>Full Name</label>
+            <label htmlFor="name">Nama Lengkap</label>
             <input
               type="text"
               name="name"
+              id="name"
               className="form-control"
               value={formData.name}
               onChange={handleChange}
               required
+              placeholder="Masukkan nama lengkap"
             />
           </div>
-          
+
           <div className="form-group">
-            <label>Email</label>
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               name="email"
+              id="email"
               className="form-control"
               value={formData.email}
               onChange={handleChange}
               required
+              placeholder="Masukkan alamat email"
             />
           </div>
-          
+
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               name="password"
+              id="password"
               className="form-control"
               value={formData.password}
               onChange={handleChange}
               minLength="6"
               required
+              placeholder="Minimal 6 karakter"
             />
           </div>
-          
+
           <div className="form-group">
-            <label>Confirm Password</label>
+            <label htmlFor="confirmPassword">Konfirmasi Password</label>
             <input
               type="password"
               name="confirmPassword"
+              id="confirmPassword"
               className="form-control"
               value={formData.confirmPassword}
               onChange={handleChange}
               required
+              placeholder="Ulangi password Anda"
             />
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="btn btn-primary"
             disabled={loading}
           >
-            {loading ? 'Loading...' : 'Register'}
+            {loading ? 'Memproses...' : 'Daftar'}
           </button>
         </form>
-        
+
         <div className="text-link">
-          Already have an account? <Link to="/login">Login here</Link>
+          Sudah punya akun? <Link to="/login">Login di sini</Link>
         </div>
       </div>
     </div>

@@ -1,42 +1,62 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom'; // Gunakan NavLink
 import { useAuth } from '../contexts/AuthContext';
+import Modal from './Modal'; // Pastikan untuk mengimpor komponen Modal
 
 const Navbar = () => {
   const { user, logout, isAdmin, isAuthenticated } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    await logout();
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    setShowLogoutModal(false);
+    navigate('/login');
   };
 
   return (
-    <nav className="navbar">
-      <div className="container navbar-content">
-        <Link to="/" className="navbar-brand">
-          Pemilihan Umum Presiden 2024
-        </Link>
+    <>
+      <nav className="navbar">
+        <div className="navbar-content"> 
+          <Link to="/" className="navbar-brand">
+            E-Voting Pilpres 2028
+          </Link>
 
-        <div className="navbar-right">
-          {isAuthenticated ? (
-            <>
-              <span className="navbar-welcome">Halo, {user.name}</span>
+          <div className="navbar-right">
+            {isAuthenticated ? (
+              <>
+                <span className="navbar-welcome">Halo, {user.name}!</span>
+                <ul className="navbar-nav">
+                  <li><NavLink to="/voting" activeClassName="active">Voting</NavLink></li>
+                  {isAdmin && <li><NavLink to="/admin" activeClassName="active">Admin</NavLink></li>}
+                </ul>
+                <button onClick={handleLogout} className="btn-logout">
+                  Logout
+                </button>
+              </>
+            ) : (
               <ul className="navbar-nav">
-                <li><Link to="/voting">Voting</Link></li>
-                {isAdmin && <li><Link to="/admin">Admin</Link></li>}
+                <li><NavLink to="/login" activeClassName="active">Login</NavLink></li>
+                <li><NavLink to="/register" activeClassName="active">Register</NavLink></li>
               </ul>
-              <button onClick={handleLogout} className="btn btn-logout">
-                Logout
-              </button>
-            </>
-          ) : (
-            <ul className="navbar-nav">
-              <li><Link to="/login">Login</Link></li>
-              <li><Link to="/register">Register</Link></li>
-            </ul>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      <Modal
+        isOpen={showLogoutModal}
+        type="warning"
+        title="Konfirmasi Logout"
+        message="Apakah Anda yakin ingin keluar dari sistem?"
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+      />
+    </>
   );
 };
 

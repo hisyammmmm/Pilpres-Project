@@ -3,6 +3,7 @@ import { candidateAPI, voteAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import CandidateCard from './CandidateCard';
 import CountdownTimer from './CountdownTimer';
+import Modal from './Modal';
 
 const VotingPage = () => {
   const [candidates, setCandidates] = useState([]);
@@ -10,6 +11,8 @@ const VotingPage = () => {
   const [loading, setLoading] = useState(false);
   const [votingLoading, setVotingLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
 
   const { user } = useAuth();
 
@@ -46,15 +49,14 @@ const VotingPage = () => {
       setError('');
       
       await voteAPI.vote(candidateId);
-      
-      // Reload votes to update UI
       await loadUserVotes();
       
-      alert('Vote submitted successfully!');
+      const candidate = candidates.find(c => c.id === candidateId);
+      setSelectedCandidate(candidate);
+      setShowSuccessModal(true);
     } catch (error) {
       const message = error.response?.data?.msg || 'Failed to submit vote';
       setError(message);
-      alert(message);
     } finally {
       setVotingLoading(false);
     }
@@ -71,20 +73,15 @@ const VotingPage = () => {
   return (
     <div className="container">
       <div className="voting-header">
-        <h1 className="voting-title">Pilihan Presiden 2024</h1>
+        <h1 className="voting-title">Gunakan Hak Pilih Anda!</h1>
         <p className="voting-subtitle">
-          {hasVoted 
-            ? 'Terima kasih telah memberikan suara Anda!' 
-            : 'Suara anda menentukan masa depan kita!'
-          }
+          {hasVoted
+            ? 'Terima kasih telah berpartisipasi dalam Pilpres 2024!'
+            : 'Pilih pemimpin masa depan Indonesia. Suara Anda sangat berarti!'}
         </p>
       </div>
 
-      {error && (
-        <div className="alert alert-error">
-          {error}
-        </div>
-      )}
+      {error && <div className="alert alert-error">{error}</div>}
 
       <div className="cards-grid">
         {candidates.map(candidate => (
@@ -102,16 +99,21 @@ const VotingPage = () => {
 
       {candidates.length === 0 && !loading && (
         <div style={{ textAlign: 'center', color: 'white', fontSize: '1.2rem', marginTop: '3rem' }}>
-          Belum ada kandidat yang tersedia
+          Belum ada kandidat yang tersedia. Mohon tunggu informasi dari Admin.
         </div>
       )}
 
       <div id="countdown-container">
-        <div id="countdown">
           <CountdownTimer targetDate="2025-07-01T12:00:00" />
-        </div>
       </div>
 
+      <Modal
+        isOpen={showSuccessModal}
+        type="success"
+        title="Terima Kasih!"
+        message={`Suara Anda untuk ${selectedCandidate?.name} telah berhasil dicatat. Anda telah berpartisipasi dalam Pemilu 2024.`}
+        onClose={() => setShowSuccessModal(false)}
+      />
     </div>
   );
 };
